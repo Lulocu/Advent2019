@@ -1,6 +1,6 @@
 """
 Advent of code 2019 day 2
-""" 
+"""  
 #mapeos
 parar = 99
 sumar = 1
@@ -8,25 +8,25 @@ multiplicar = 2
 
 fh = open("input.txt",'r')
 
-datos = fh.read()
-datos = datos.rsplit(',')
+cinta = fh.read()
+cinta = cinta.rsplit(',')
 
-datos[1] = 12
-datos[2] = 2
-datos = list(map(int,datos))
+cinta[1] = 12
+cinta[2] = 2
+cinta = list(map(int,cinta))
 
-for i in range(0,len(datos),4):
+for op in range(0,len(cinta),4):
 
-    if datos[i] == parar:
+    if cinta[op] == parar:
         break
 
-    elif datos[i] == sumar:
-        datos[datos[i+3]]  = datos[datos[i+1]] + datos[datos[i+2]]
+    elif cinta[op] == sumar:
+        cinta[cinta[op+3]]  = cinta[cinta[op+1]] + cinta[cinta[op+2]]
 
-    elif datos[i] == multiplicar:
-        datos[datos[i+3]]  = datos[datos[i+1]] * datos[datos[i+2]]
+    elif cinta[op] == multiplicar:
+        cinta[cinta[op+3]]  = cinta[cinta[op+1]] * cinta[cinta[op+2]]
 
     else:
-        raise Exception('Code op at position %f is not correct. CodeOp = %f',i,datos[i])
+        raise Exception('Code op at position %f is not correct. CodeOp = %f',op,cinta[op])
 
-print(datos[0])
+print(cinta[0])

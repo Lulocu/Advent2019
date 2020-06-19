@@ -26,6 +26,18 @@ def manhatan(x,y):
     distance = abs(x - 0) + abs(y - 0)
     return distance
 
+def buscarMenor(lista):
+
+    dev = lista[0]
+    dist = manhatan(dev[0],dev[1])
+
+    for element in lista:
+        aux = manhatan(element[0],element[1])
+        if aux < dist:
+            dist = aux
+            dev = element
+    return dist
+
 pos = (0,0)
 fh = open('input.txt','r')
 cont = 1
@@ -65,13 +77,6 @@ res = list(set(camino[1]) & set(camino[2]))
 
 res.remove((0,0))
 
-dev = res[0]
-dist = manhatan(dev[0],dev[1])
+distancia = buscarMenor(res)
 
-for element in res:
-    aux = manhatan(element[0],element[1])
-    if aux < dist:
-        dist = aux
-        dev = element
-
-print(dist)
+print(distancia)

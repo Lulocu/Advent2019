@@ -1,86 +1,51 @@
-def calcularListaX(origen,movimiento,resta):
+def calcularListaX(origen,movimiento,resta,nPasos):
     res = []
-    
+
     for aux in range(movimiento + 1):
+        
         if resta:
-            tup = (origen[0],origen[1] - aux)
+            tup = (origen[0],origen[1] - aux,nPasos)
         else:
-            tup = (origen[0],origen[1] + aux)
+            tup = (origen[0],origen[1] + aux,nPasos)
         res.append(tup)
+        nPasos+=1
     return res
 
 
-def calcularListaY(origen,movimiento,resta):
+def calcularListaY(origen,movimiento,resta,nPasos):
     res = []
-    
     for aux in range(movimiento + 1):
+        
         if resta:
-            tup = (origen[0]-aux,origen[1])
+            tup = (origen[0]-aux,origen[1],nPasos)
         else:
-            tup = (origen[0]+aux,origen[1])
+            tup = (origen[0]+aux,origen[1],nPasos)
         res.append(tup)
+        nPasos+=1
     return res
 
-def manhatan(x,y):
-  #  print(x,y)
-    
-    distance = abs(x - 0) + abs(y - 0)
-  #  print(distance)
-    return distance
-def calcularListaXNPasos(origen,movimiento,resta):
+def interseccion(cable1,cable2):
     res = []
-    
-    for aux in range(movimiento + 1):
-        if resta:
-            tup = (origen[0],origen[1] - aux)
-        else:
-            tup = (origen[0],origen[1] + aux)
-        res.append(tup)
-    return res
-
-
-def calcularListaYNPasos(origen,movimiento,resta):
-    res = []
-    
-    for aux in range(movimiento + 1):
-        if resta:
-            tup = (origen[0]-aux,origen[1])
-        else:
-            tup = (origen[0]+aux,origen[1])
-        res.append(tup)
-    return res
-    
-def busqNPasos(pos):
-    pasos = 0
-    for cable in dicc.keys():
-        for movimiento in dicc[cable]:
-            origen = camino[cable][-1]
-            if origen == pos:
-                break
-            pasos = pasos + 1
-            direccion = movimiento[0]
-            cantidad = int(movimiento[1:])
-            if direccion == 'R':
-                nuevo = calcularListaX(origen,cantidad,False)
-
-            elif direccion == 'L':
-                nuevo = calcularListaX(origen,cantidad,True)
-
-            elif direccion == 'U':
-                nuevo = calcularListaY(origen,cantidad,False)
-
-            elif direccion == 'D':
-                nuevo = calcularListaY(origen,cantidad,True)
+    for pos in cable1:
+        for elemento in cable2:
+            if pos[0] == elemento[0] and pos[1] == elemento[1]:
+                res.append((pos[0],pos[1],pos[2]+elemento[2]))
                 
-            else:
-                raise Exception('Direccion desconocida '+ direccion)
+    return res
 
-            camino[cable] = camino[cable] + nuevo
-    return pasos
+def buscarMenor(lista):
 
+    dev = lista[0]
+    dist = lista[0][2]
 
+    for element in lista:
+        aux = element[2]
+        if aux < dist:
+            dist = aux
+            dev = element
+    return dist
 
-pos = (0,0)
+pos = (0,0,0)
 fh = open('input.txt','r')
 cont = 1
 dicc = {}
@@ -93,40 +58,33 @@ for line in fh:
 camino = {1:[pos],2:[pos]}
 
 for cable in dicc.keys():
-    for movimiento in dicc[cable]:
-
-        origen = camino[cable][-1]
+    for movimiento in dicc[cable]: #['R23' 'u63']
         direccion = movimiento[0]
         cantidad = int(movimiento[1:])
+        origen = camino[cable][-1]
 
         if direccion == 'R':
-            nuevo = calcularListaX(origen,cantidad,False)
-
+            
+            nuevo = calcularListaX(origen,cantidad,False,origen[2])
+            
         elif direccion == 'L':
-            nuevo = calcularListaX(origen,cantidad,True)
+            nuevo = calcularListaX(origen,cantidad,True,origen[2])
 
         elif direccion == 'U':
-            nuevo = calcularListaY(origen,cantidad,False)
+            nuevo = calcularListaY(origen,cantidad,False,origen[2])
 
         elif direccion == 'D':
-            nuevo = calcularListaY(origen,cantidad,True)
-
+            nuevo = calcularListaY(origen,cantidad,True,origen[2])
+            
         else:
             raise Exception('Direccion desconocida '+ direccion)
 
         camino[cable] = camino[cable] + nuevo
 
-res = list(set(camino[1]) & set(camino[2]))
+camino[1].remove((0,0,0))
+camino[1].remove((0,0,0))
+res = interseccion(camino[1],camino[2])
 
-res.remove((0,0))
-dev = None
-dist = 999999
-for element in res:
+distancia = buscarMenor(res)
 
-
-    aux = busqNPasos(element)
-    if aux < dist:
-        print('dentro')
-        dist = aux
-        dev = element
-print(dist)
+print(distancia)
