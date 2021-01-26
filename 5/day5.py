@@ -15,45 +15,45 @@ igual = 8
 
 
 
-def calcular1Param(pos,paramCode):
-    paramCode = list(map(int, str(paramCode)))
-    if len(paramCode) < 1:
-        return cinta[cinta[pos + 1]]
+def calcular1Param(nCeldilla,codigoParametros):
+    codigoParametros = list(map(int, str(codigoParametros)))
+    if len(codigoParametros) < 1:
+        return cinta[cinta[nCeldilla + 1]]
     else:
-        return cinta[pos+1]
+        return cinta[nCeldilla+1]
 
-def calcular2Param(pos,paramCode):
-    paramCode = list(map(int, str(paramCode)))
-    if len(paramCode) < 2:
-        paramCode.insert(0,0)
+def calcular2Param(nCeldilla,codigoParametros):
+    codigoParametros = list(map(int, str(codigoParametros)))
+    if len(codigoParametros) < 2:
+        codigoParametros.insert(0,0)
 
-    if paramCode[-1] == 0:
-        variable = cinta[cinta[pos + 1]]
+    if codigoParametros[-1] == 0:
+        operando = cinta[cinta[nCeldilla + 1]]
     else:
-        variable = cinta[pos+1]
+        operando = cinta[nCeldilla+1]
 
-    if paramCode[-2] == 0:
-        destino = cinta[cinta[pos + 2]]
+    if codigoParametros[-2] == 0:
+        destino = cinta[cinta[nCeldilla + 2]]
     else:
-        destino = cinta[pos + 2]
+        destino = cinta[nCeldilla + 2]
 
-    return[variable,destino]
+    return[operando,destino]
 
-def calcular3Param(pos,paramCode):
-    paramCode = list(map(int, str(paramCode)))
-    while len(paramCode) < 2:
-        paramCode.insert(0,0)
-    if paramCode[-1] != 1:
-        operando1 = cinta[cinta[pos + 1]]
+def calcular3Param(nCeldilla,codigoParametros):
+    codigoParametros = list(map(int, str(codigoParametros)))
+    while len(codigoParametros) < 2:
+        codigoParametros.insert(0,0)
+    if codigoParametros[-1] != 1:
+        operando1 = cinta[cinta[nCeldilla + 1]]
     else:
-        operando1 = cinta[pos+1]
+        operando1 = cinta[nCeldilla+1]
 
-    if paramCode[-2] != 1:
-        operando2 = cinta[cinta[pos + 2]]
+    if codigoParametros[-2] != 1:
+        operando2 = cinta[cinta[nCeldilla + 2]]
     else:
-        operando2 = cinta[pos + 2]
+        operando2 = cinta[nCeldilla + 2]
 
-    destino =  cinta[pos + 3]
+    destino =  cinta[nCeldilla + 3]
     return[operando1,operando2,destino]
 
 
@@ -63,65 +63,66 @@ cinta = fh.read()
 cinta = cinta.rsplit(',')
 cinta = list(map(int,cinta))
 
-pos = 0
-while pos < len(cinta):
-    aux=str(cinta[pos])
-    codeOp = int(aux[-2:])
-    paramCode = aux[0:-2]
+nCeldilla = 0
+while nCeldilla < len(cinta):
+    aux=str(cinta[nCeldilla])
+    codigoOperacion = int(aux[-2:])
+    codigoParametros = aux[0:-2]
 
-    if codeOp == parar:
+    if codigoOperacion == parar:
         break
 
-    elif codeOp == sumar:
-        [sumando1, sumando2, destino] = calcular3Param(pos,paramCode)
+    elif codigoOperacion == sumar:
+        [sumando1, sumando2, destino] = calcular3Param(nCeldilla,codigoParametros)
         cinta[destino]  = sumando1 + sumando2
-        pos += 4
+        nCeldilla += 4
 
-    elif codeOp == multiplicar:
-        [multiplicando1, multiplicando2,destino] = calcular3Param(pos,paramCode)
+    elif codigoOperacion == multiplicar:
+        [multiplicando1, multiplicando2,destino] = calcular3Param(nCeldilla,codigoParametros)
         cinta[destino]  = multiplicando1 * multiplicando2
-        pos += 4
+        nCeldilla += 4
 
-    elif codeOp == entrada:
+    elif codigoOperacion == entrada:
         print("Escriba el input del programa:")
         inputNumber = input()
-        cinta[cinta[pos+1]] = int(inputNumber)
-        pos += 2
+        cinta[cinta[nCeldilla+1]] = int(inputNumber)
+        nCeldilla += 2
 
-    elif codeOp == salida:
-        destino = calcular1Param(pos,paramCode)
+    elif codigoOperacion == salida:
+        destino = calcular1Param(nCeldilla,codigoParametros)
         print(destino)
-        pos += 2
+        nCeldilla += 2
 
-    elif codeOp == saltarSiTrue:
-        [variable,destino] = calcular2Param(pos,paramCode)
-        if variable != 0:
-            pos = destino
+    elif codigoOperacion == saltarSiTrue:
+        [operando,destino] = calcular2Param(nCeldilla,codigoParametros)
+        if operando != 0:
+            nCeldilla = destino
         else:
-            pos += 3
+            nCeldilla += 3
 
-    elif codeOp == saltarSiFalse:
-        [variable,destino] = calcular2Param(pos,paramCode)
-        if variable == 0:
-            pos = destino
+    elif codigoOperacion == saltarSiFalse:
+        [operando,destino] = calcular2Param(nCeldilla,codigoParametros)
+        if operando == 0:
+            nCeldilla = destino
         else:
-            pos += 3
+            nCeldilla += 3
 
-    elif codeOp == menor:
-        [operando1,operando2,destino] = calcular3Param(pos,paramCode)
+    elif codigoOperacion == menor:
+        [operando1,operando2,destino] = calcular3Param(nCeldilla,codigoParametros)
         if operando1 < operando2:
             cinta[destino] = 1
         else:
             cinta[destino] = 0
-        pos += 4
+        nCeldilla += 4
 
-    elif codeOp == igual:
-        [operando1,operando2,destino] = calcular3Param(pos,paramCode)
-        if operando1 < operando2:
+    elif codigoOperacion == igual:
+        [operando1,operando2,destino] = calcular3Param(nCeldilla,codigoParametros)
+        if operando1 == operando2:
             cinta[destino] = 1
         else:
             cinta[destino] = 0
-        pos += 4
+        nCeldilla += 4
+
     else:
-        raise Exception('Code op at position %f is not correct. Code = %f',pos,cinta[pos])
+        raise Exception('Code op at nCeldillaition %f is not correct. Code = %f',nCeldilla,cinta[nCeldilla])
 
